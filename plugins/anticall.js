@@ -87,15 +87,15 @@ async (client, message, m, { isOwner, from, sender, args, prefix }) => {
 
         // Send the combined message with image and newsletter info
         await client.sendMessage(from, {
-            image: { url: "https://files.catbox.moe/4j07ae.jpg" },
-            caption: `${statusText}\n\n${additionalInfo}\n\n_Nova-Xmd_`,
+            image: { url: "https://files.catbox.moe/reypkp.jpg" },
+            caption: `${statusText}\n\n${additionalInfo}\n\nDML`,
             contextInfo: {
                 mentionedJid: [sender],
                 forwardingScore: 999,
                 isForwarded: true,
                 forwardedNewsletterMessageInfo: {
-                    newsletterJid: '120363382023564830@newsletter',
-                    newsletterName: 'Nova-Xmd',
+                    newsletterJid: '120363403958418756@newsletter',
+                    newsletterName: 'DML-ANTICALL',
                     serverMessageId: 143
                 }
             }
