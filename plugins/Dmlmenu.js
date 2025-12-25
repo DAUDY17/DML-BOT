@@ -29,15 +29,20 @@ function buildDynamicMenu() {
 
         categories[cmdObj.category].push(cmdObj.pattern);
     }
+let menuText = "";
 
-    let menuText = "";
+for (const category in categories) {
+    menuText += `
+╭━━━━━━━━━━━━━━━━━━━⭓
+│ ⭐ *${category.toUpperCase()}*
+╰━━━━━━━━━━━━━━━━━━━⭓
+`;
 
-    for (let category in categories) {
-        menuText += `\n╭──₪·[ ⭐ *${category.toUpperCase()}* ⭐ ]\n`;
-        categories[category].forEach(cmdName => {
-            menuText += `┆ ◦  ${cmdName}\n`;
-        });
-        menuText += "╰─┈⊷\n";
+    categories[category].forEach(cmdName => {
+        menuText += `│ ▸ ${cmdName}\n`;
+    });
+
+    menuText += `╰━━━━━━━━━━━━━━━━━━━⭓\n`;
     }
 
     return { menuText, totalCommands: Object.keys(commands).length }; // Return total commands
