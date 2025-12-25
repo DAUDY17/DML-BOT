@@ -133,23 +133,34 @@ async function connectToWA() {
           const startMess = {
             image: { url: 'https://files.catbox.moe/4j07ae.jpg' },
             caption: `
-───────────────────────────
-*CONNECTED SUCCESSFUL ✅*
-────────────────────────────
-> Simple , Straight Forward But Loaded With Features, 
- Meet *NOVA-XMD* WhatsApp Bot🔥
+╭━━━[  WELCOME LEGEND ]━╮
+┃
+┃   🤖 *BOT NAME:*   DML-MD  
+┃   ⚡ *Mode:*        Ultrasonic Speed  
+┃   🛰️ *Assistant:*  Your WhatsApp Sidekick  
+┃   ❤️ *Status:*     Powered by YOU!
+┃
+╰━━━━━━━━━━━━━━━━━━━━━╯
 
-*Thanks for using NOVA XMD* 
-*Join WhatsApp Channel 🕊️*
-> https://whatsapp.com/channel/0029VawO6hgF6sn7k3SuVU3z
+📌 *QUICK NAVIGATION:*
 
-*Join WhatsApp group 😎*
-> https://chat.whatsapp.com/BKoqNbYGCkK5apBNP0nzI3
+╭──────────────────────╮
+│ 🔗 *Join Channel:*  
+│    📲 [Click Here](https://whatsapp.com/channel/0029VbBf4Y52kNFkFCx2pF1H)
+│
+│ ⭐ *Star on GitHub:*  
+│    🌟 [Support Us](https://github.com/MLILA17/DML-MD)
+│
+│ 🛠️ *Current Prefix:* \`${prefix}\`
+╰──────────────────────╯
 
-*ʏᴏᴜʀ ᴘʀᴇғɪx : ${config.PREFIX}*
-────────────────────────────
+💡 _Tip: Type \`${prefix}menu\` to explore all features!_
 
-> *© ᴘᴏᴡᴇʀᴇᴅ ʙʏ 𝙽𝙾𝚅𝙰 ᴛᴇᴄʜ*`,
+───────────────
+👨‍💻 *Coded with 💙 by Daudi M. Mlila*  
+🔐 *Secure. Fast. Reliable.*  
+📅 *© 2025 | DML-MD PROJECT*
+───────────────`,
             contextInfo: {
               forwardingScore: 5,
               isForwarded: true,
