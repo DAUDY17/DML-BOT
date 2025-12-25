@@ -21,32 +21,45 @@ function buildDynamicMenu() {
     for (let name in commands) {
         let cmdObj = commands[name];
 
+        // Default category
         if (!cmdObj.category) cmdObj.category = "Other";
 
         if (!categories[cmdObj.category]) {
             categories[cmdObj.category] = [];
         }
 
-        categories[cmdObj.category].push(cmdObj.pattern);
-    }
-let menuText = "";
+        // ✅ Resolve command name safely
+        let commandName =
+            cmdObj.pattern ||
+            name ||
+            (Array.isArray(cmdObj.alias) ? cmdObj.alias[0] : null) ||
+            "unknown";
 
-for (const category in categories) {
-    menuText += `
+        categories[cmdObj.category].push(commandName);
+    }
+
+    let menuText = "";
+
+    for (const category in categories) {
+        menuText += `
 ╭━━━━━━━━━━━━━━━━━━━⭓
 │ ⭐ *${category.toUpperCase()}*
 ╰━━━━━━━━━━━━━━━━━━━⭓
 `;
 
-    categories[category].forEach(cmdName => {
-        menuText += `│ ▸ ${cmdName}\n`;
-    });
+        categories[category].forEach(cmdName => {
+            menuText += `│ ▸ ${cmdName}\n`;
+        });
 
-    menuText += `╰━━━━━━━━━━━━━━━━━━━⭓\n`;
+        menuText += `╰━━━━━━━━━━━━━━━━━━━⭓\n`;
     }
 
-    return { menuText, totalCommands: Object.keys(commands).length }; // Return total commands
+    return {
+        menuText,
+        totalCommands: Object.keys(commands).length
+    };
 }
+
 
 // --------------------------------------------
 // DML MAIN MENU COMMAND
