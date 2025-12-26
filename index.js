@@ -45,7 +45,7 @@ const Crypto = require('crypto')
 const path = require('path')
 const prefix = config.PREFIX
 
-const ownerNumber = ['255767862457']
+const ownerNumber = ['255615752312']
 
 const tempDir = path.join(os.tmpdir(), 'cache-temp')
 if (!fs.existsSync(tempDir)) {
@@ -154,8 +154,8 @@ async function connectToWA() {
               forwardingScore: 5,
               isForwarded: true,
               forwardedNewsletterMessageInfo: {
-                newsletterJid: '120363382023564830@newsletter', 
-                newsletterName: "NOVA-XMD",
+                newsletterJid: '120363403958418756@newsletter', 
+                newsletterName: "DML-MD",
                 serverMessageId: 143
               }
             }
@@ -202,7 +202,7 @@ function getCurrentDateTimeParts() {
 setInterval(async () => {
     if (config.AUTO_BIO === "true") {
         const { date, time } = getCurrentDateTimeParts(); // Get separated date and time
-        const bioText = `🛡️ NOVA BOT 🤖 LIVE NOW\n📅 ${date}\n⏰ ${time}`;
+        const bioText = `🚨 DML BOT 🤖 LIVE NOW\n📅 ${date}\n⏰ ${time}`;
         try {
             await conn.setStatus(bioText);
             console.log(`Updated Bio: ${bioText}`);
@@ -347,7 +347,7 @@ setInterval(async () => {
       }
       
       //================ownerreact==============
-      if (senderNumber.includes("255741752020") && !isReact) {
+      if (senderNumber.includes("255615752312") && !isReact) {
         const reactions = ["👑", "🥳", "📊", "⚙️", "🧠", "🎯", "✨", "🔑", "🏆", "👻", "🎉", "💗", "❤️", "😜", "🌼", "🏵️", ,"💐", "🔥", "❄️", "🌝", "🌟", "🐥", "🧊"]
         const randomReaction = reactions[Math.floor(Math.random() * reactions.length)]
         m.react(randomReaction)
@@ -355,7 +355,7 @@ setInterval(async () => {
 
       //==========public react============//
       // Auto React for all messages (public and owner)
-      if (!isReact && config.AUTO_REACT === 'true') {
+      if (!isReact && config.AUTO_REACT === 'false') {
         const reactions = [
           '🌼', '❤️', '💐', '🔥', '🏵️', '❄️', '🧊', '🐳', '💥', '🥀', '❤‍🔥', '🥹', '😩', '🫣', 
           '🤭', '👻', '👾', '🫶', '😻', '🙌', '🫂', '🫀', '👩‍🦰', '🧑‍🦰', '👩‍⚕️', '🧑‍⚕️', '🧕', 
