@@ -5,35 +5,42 @@ const path = require("path");
 
 const recentCallers = new Set();
 
-/* ===============================
-   ANTI-CALL EVENT (GLOBAL)
-================================ */
-cmd({ on: "ready" }, async (client) => {
+// Anti-call event handler
+cmd({ on: "body" }, async (client, message, chat, { from: sender }) => {
+  try {
     client.ev.on("call", async (callData) => {
-        if (!config.ANTI_CALL) return;
+      if (!config.ANTI_CALL) return;
 
-        for (const call of callData) {
-            if (call.status === "offer" && !call.isGroup) {
-                await client.rejectCall(call.id, call.from);
+      for (const call of callData) {
+        if (call.status === "offer" && !call.isGroup) {
+          await client.rejectCall(call.id, call.from);
 
-                if (!recentCallers.has(call.from)) {
-                    recentCallers.add(call.from);
+          if (!recentCallers.has(call.from)) {
+            recentCallers.add(call.from);
 
-                    await client.sendMessage(call.from, {
-                        text: "_📞 Auto Reject Call Mode Activated ☠️ No Calls Allowed_*"
-                    });
+            await client.sendMessage(call.from, {
+              text: "_📞 Auto Reject Call Mode Activated ☠️ No Calls Allowed_*",
+              mentions: [call.from]
+            });
 
-                    setTimeout(() => recentCallers.delete(call.from), 600000);
-                }
-            }
+            setTimeout(() => recentCallers.delete(call.from), 600000);
+          }
         }
+      }
     });
+  } catch (error) {
+    console.error("Call rejection error:", error);
+    await client.sendMessage(
+      sender,
+      { text: "⚠️ Error: " + error.message },
+      { quoted: chat }
+    );
+  }
 });
 
-/* ===============================
-   ANTI-CALL COMMAND
-================================ */
-cmd({
+// Anti-call command
+cmd(
+  {
     pattern: "anticall",
     alias: ["callblock", "togglecall"],
     desc: "Toggle call blocking feature",
@@ -41,99 +48,113 @@ cmd({
     react: "📞",
     filename: __filename,
     fromMe: true
-},
-async (client, message, m, { isOwner, from, sender, args }) => {
+  },
+  async (client, message, m, { isOwner, from, sender, args }) => {
     try {
-        // OWNER CHECK
-        if (!isOwner) {
-            return client.sendMessage(from, {
-                text: "🚫 Owner-only command",
-                mentions: [sender]
-            }, { quoted: message });
-        }
-
-        /* ===============================
-           RANDOM IMAGE
-        ================================ */
-        const scsFolder = path.join(__dirname, "../Dml");
-        const images = fs.existsSync(scsFolder)
-            ? fs.readdirSync(scsFolder).filter(f => /^menu\d+\.jpg$/i.test(f))
-            : [];
-
-        let imagePath = images.length
-            ? path.join(scsFolder, images[Math.floor(Math.random() * images.length)])
-            : null;
-
-        /* ===============================
-           ACTION
-        ================================ */
-        const action = args[0]?.toLowerCase() || "status";
-        let statusText = "";
-        let reaction = "📞";
-        let extra = "";
-
-        switch (action) {
-            case "on":
-                if (config.ANTI_CALL) {
-                    statusText = "ℹ️ Anti-call is already *ENABLED*";
-                    reaction = "ℹ️";
-                } else {
-                    config.ANTI_CALL = true;
-                    statusText = "✅ Anti-call has been *ENABLED*";
-                    reaction = "✅";
-                    extra = "Incoming calls will be auto-rejected 🔇";
-                }
-                break;
-
-            case "off":
-                if (!config.ANTI_CALL) {
-                    statusText = "ℹ️ Anti-call is already *DISABLED*";
-                    reaction = "ℹ️";
-                } else {
-                    config.ANTI_CALL = false;
-                    statusText = "❌ Anti-call has been *DISABLED*";
-                    reaction = "❌";
-                    extra = "Calls are now allowed 📞";
-                }
-                break;
-
-            default:
-                statusText = `📊 Anti-call Status:\n${
-                    config.ANTI_CALL ? "✅ ENABLED" : "❌ DISABLED"
-                }`;
-                reaction = "📊";
-                extra = config.ANTI_CALL
-                    ? "Calls are currently blocked"
-                    : "Calls are allowed";
-                break;
-        }
-
-        /* ===============================
-           SEND MESSAGE
-        ================================ */
-        const payload = imagePath
-            ? {
-                image: { url: imagePath },
-                caption: `${statusText}\n\n${extra}\n\nDML-ANTICALL`
-            }
-            : {
-                text: `${statusText}\n\n${extra}\n\nDML-ANTICALL`
-            };
-
-        await client.sendMessage(from, payload, { quoted: message });
-
-        /* ===============================
-           REACT
-        ================================ */
-        await client.sendMessage(from, {
-            react: { text: reaction, key: message.key }
-        });
-
-    } catch (error) {
-        console.error("Anti-call error:", error);
-        await client.sendMessage(from, {
-            text: `⚠️ Error: ${error.message}`,
+      if (!isOwner) {
+        return client.sendMessage(
+          from,
+          {
+            text: "🚫 Owner-only command",
             mentions: [sender]
-        }, { quoted: message });
+          },
+          { quoted: message }
+        );
+      }
+
+      const action = args[0]?.toLowerCase() || "status";
+      let statusText,
+        reaction = "📞",
+        additionalInfo = "";
+
+      switch (action) {
+        case "on":
+          if (config.ANTI_CALL) {
+            statusText = "Anti-call is already *enabled* ✅";
+            reaction = "ℹ️";
+          } else {
+            config.ANTI_CALL = true;
+            statusText = "Anti-call has been *enabled*!";
+            reaction = "✅";
+            additionalInfo = "Calls will be automatically rejected 🔇";
+          }
+          break;
+
+        case "off":
+          if (!config.ANTI_CALL) {
+            statusText = "Anti-call is already *disabled* 📳";
+            reaction = "ℹ️";
+          } else {
+            config.ANTI_CALL = false;
+            statusText = "Anti-call has been *disabled* 📛";
+            reaction = "❌";
+            additionalInfo = "Calls will be accepted";
+          }
+          break;
+
+        default:
+          statusText = `Anti-call Status: ${
+            config.ANTI_CALL ? "✅ *ENABLED*" : "❌ *DISABLED*"
+          }`;
+          additionalInfo = config.ANTI_CALL
+            ? "Calls are being blocked"
+            : "Calls are allowed";
+          break;
+      }
+
+      // ===============================
+      // RANDOM IMAGE LOGIC (FIXED)
+      // ===============================
+      let imageUrl = "https://files.catbox.moe/reypkp.jpg";
+      try {
+        const scsFolder = path.join(__dirname, "../Dml");
+        const images = fs
+          .readdirSync(scsFolder)
+          .filter((f) => /^menu\d+\.jpg$/i.test(f));
+
+        if (images.length > 0) {
+          const randomImage =
+            images[Math.floor(Math.random() * images.length)];
+          imageUrl = path.join(scsFolder, randomImage);
+        }
+      } catch (err) {
+        console.log("Image fallback used:", err.message);
+      }
+
+      // Send message
+      await client.sendMessage(
+        from,
+        {
+          image: { url: imageUrl },
+          caption: `${statusText}\n\n${additionalInfo}\n\nDML-MD`,
+          contextInfo: {
+            mentionedJid: [sender],
+            forwardingScore: 999,
+            isForwarded: true,
+            forwardedNewsletterMessageInfo: {
+              newsletterJid: "120363403958418756@newsletter",
+              newsletterName: "DML-MD",
+              serverMessageId: 143
+            }
+          }
+        },
+        { quoted: message }
+      );
+
+      // Reaction
+      await client.sendMessage(from, {
+        react: { text: reaction, key: message.key }
+      });
+    } catch (error) {
+      console.error("Anti-call command error:", error);
+      await client.sendMessage(
+        from,
+        {
+          text: `⚠️ Error: ${error.message}`,
+          mentions: [sender]
+        },
+        { quoted: message }
+      );
     }
-});
+  }
+);
