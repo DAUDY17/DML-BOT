@@ -114,7 +114,7 @@ ANTI_VV: process.env.ANTI_VV || "true",
 AUTO_RECORDING: process.env.AUTO_RECORDING || "false",
 // make it true for auto recoding 
 
-AUTO_BIO: process.env.AUTO_BIO || "false",
+AUTO_BIO: process.env.AUTO_BIO || "true",
 // make true if you want bot to auto-update bio/status
 
 CHAT_BOT: process.env.CHAT_BOT || "false"
