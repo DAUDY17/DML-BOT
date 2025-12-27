@@ -114,10 +114,10 @@ async (client, message, m, { isOwner, from, sender, args }) => {
         const payload = imagePath
             ? {
                 image: { url: imagePath },
-                caption: `${statusText}\n\n${extra}\n\n_DML-MD_`
+                caption: `${statusText}\n\n${extra}\n\nDML-ANTICALL`
             }
             : {
-                text: `${statusText}\n\n${extra}\n\n_DML-MD_`
+                text: `${statusText}\n\n${extra}\n\nDML-ANTICALL`
             };
 
         await client.sendMessage(from, payload, { quoted: message });
