@@ -30,14 +30,13 @@ cmd({
     fs.writeFileSync(tempFilePath, mediaBuffer);
 
     // Detect extension
-    let extension = "";
-    if (mimeType.includes("image/jpeg")) extension = ".jpg";
-    else if (mimeType.includes("image/png")) extension = ".png";
-    else if (mimeType.includes("image/webp")) extension = ".webp";
-    else if (mimeType.includes("image/gif")) extension = ".gif";
+    let extension = ".bin";
+    if (mimeType.includes("jpeg")) extension = ".jpg";
+    else if (mimeType.includes("png")) extension = ".png";
+    else if (mimeType.includes("webp")) extension = ".webp";
+    else if (mimeType.includes("gif")) extension = ".gif";
     else if (mimeType.includes("video")) extension = ".mp4";
     else if (mimeType.includes("audio")) extension = ".mp3";
-    if (!extension) extension = ".bin";
 
     const fileName = `file${extension}`;
     const form = new FormData();
@@ -50,12 +49,12 @@ cmd({
       { headers: form.getHeaders() }
     );
 
-    if (!response.data || !response.data.includes("https://")) {
-      throw "Upload failed. Catbox returned an unexpected response.";
+    if (!response.data || !response.data.startsWith("https://")) {
+      throw "Upload failed. Invalid Catbox response.";
     }
 
     // ===============================
-    // RANDOM IMAGE LOGIC (FIXED)
+    // RANDOM IMAGE LOGIC (WORKING)
     // ===============================
     let imageUrl = "https://files.catbox.moe/reypkp.jpg"; // fallback
 
@@ -66,34 +65,43 @@ cmd({
         .filter(f => /^menu\d+\.jpg$/i.test(f));
 
       if (images.length > 0) {
-        const randomImage =
-          images[Math.floor(Math.random() * images.length)];
+        const randomImage = images[Math.floor(Math.random() * images.length)];
         imageUrl = path.join(scsFolder, randomImage);
       }
     } catch (err) {
-      console.log("Image fallback used:", err.message);
+      console.log("Random image error:", err.message);
     }
 
     const mediaUrl = response.data;
+
     let mediaType = "File";
     if (mimeType.includes("image")) mediaType = "Image";
     else if (mimeType.includes("video")) mediaType = "Video";
     else if (mimeType.includes("audio")) mediaType = "Audio";
 
-    // Send result (text only — image logic prepared if needed later)
+    const caption =
+`╭───〔 FILE UPLOADED 〕───╮
+│ 📁 Type : ${mediaType}
+│ 📦 Size : ${formatBytes(mediaBuffer.length)}
+│ 🌐 URL  :
+│ ${mediaUrl}
+╰────────────────────────╯
+> Uploaded by Dml`;
+
+    // ===============================
+    // SEND IMAGE + CAPTION + CONTEXT
+    // ===============================
     await client.sendMessage(message.chat, {
-      text:
-        "```[ FILE UPLOAD SUCCESS ]```\n" +
-        "```========================```\n" +
-        `📁 TYPE   : ${mediaType}\n` +
-        `📦 SIZE   : ${formatBytes(mediaBuffer.length)}\n` +
-        `🌐 LINK   :\n${mediaUrl}\n` +
-        "```========================```\n" +
-        `> Uploaded by: Dml`,
+      image: { url: imageUrl },
+      caption: caption,
       contextInfo: {
+        mentionedJid: [message.sender],
+        forwardingScore: 999,
+        isForwarded: true,
         forwardedNewsletterMessageInfo: {
           newsletterJid: "120363403958418756@newsletter",
-          newsletterName: "DML-URL"
+          newsletterName: "DML-URL",
+          serverMessageId: 143
         }
       }
     }, { quoted: message });
@@ -116,5 +124,5 @@ function formatBytes(bytes) {
   const k = 1024;
   const sizes = ["Bytes", "KB", "MB", "GB"];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
+  return (bytes / Math.pow(k, i)).toFixed(2) + " " + sizes[i];
 }
