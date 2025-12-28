@@ -45,6 +45,7 @@ const Crypto = require('crypto')
 const path = require('path')
 const prefix = config.PREFIX
 
+const callHandler = require('./lib/callhandler');
 const ownerNumber = ['255767862457']
 
 const tempDir = path.join(os.tmpdir(), 'cache-temp')
@@ -167,6 +168,9 @@ async function connectToWA() {
         }
       }
     })
+		Initialize the call handler ---
+            callHandler(conn, config.ANTICALL); 
+            // --------------------------
     // Function to get the current date and time in Tanzania
 function getCurrentDateTimeParts() {
     const options = {
