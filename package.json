@@ -1,12 +1,12 @@
 {
-  "name": "DML-XMD",
+  "name": "DML-MD",
   "version": "3.0.0",
-  "description": "A WhatsApp Bot Created By DML",
+  "description": "A WhatsApp Bot Created By Dml",
   "main": "index.js",
   "scripts": {
-    "start": "pm2 start index.js --deep-monitoring --attach --name DML-XMD",
-    "stop": "pm2 stop DML-XMD",
-    "restart": "pm2 restart DML-XMD"
+    "start": "pm2 start index.js --deep-monitoring --attach --name DML-MD",
+    "stop": "pm2 stop DML-MD",
+    "restart": "pm2 restart DML-MD"
   },
   "dependencies": {
     "@whiskeysockets/baileys": "^6.7.18",
